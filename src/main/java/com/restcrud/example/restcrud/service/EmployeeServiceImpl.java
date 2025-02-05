@@ -1,41 +1,48 @@
 package com.restcrud.example.restcrud.service;
 
-import com.restcrud.example.restcrud.dao.EmployeeDao;
+import com.restcrud.example.restcrud.dao.EmployeeRepository;
 import com.restcrud.example.restcrud.entity.Employee;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class EmployeeServiceImpl implements EmployeeService{
 
-    private final EmployeeDao employeeDao;
+    private EmployeeRepository employeeRepository;
 
     @Autowired
-    public EmployeeServiceImpl(EmployeeDao theEmployeeDAO) {
-        this.employeeDao = theEmployeeDAO;
+    public EmployeeServiceImpl(EmployeeRepository theEmployeeRepository) {
+        this.employeeRepository = theEmployeeRepository;
     }
 
     @Override
     public List<Employee> findAll() {
-        return employeeDao.findAll();
+        return employeeRepository.findAll();
     }
 
     @Override
     public Employee findById(int theID) {
-        return employeeDao.findById(theID);
+        Optional<Employee> result = employeeRepository.findById(theID);
+        Employee employee = null;
+        if(result.isPresent()){
+            employee = result.get();
+        } else {
+            throw new RuntimeException("Sorry! could not find the ID " + theID);
+        }
+        return employee;
     }
 
-    @Transactional
+    // REMOVED THE TRANSACTIONAL SINCE JPA_REPOSITORY PROVIDES THIS FUNCTIONALITY
     @Override
     public Employee save(Employee employeeToSave) {
-        return employeeDao.save(employeeToSave);
+        return employeeRepository.save(employeeToSave);
     }
 
-    @Transactional
     @Override
     public void deleteByID(int theID) {
-        employeeDao.deleteByID(theID);
+        employeeRepository.deleteById(theID);
     }
 }
