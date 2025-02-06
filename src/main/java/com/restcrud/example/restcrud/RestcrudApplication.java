@@ -13,6 +13,14 @@ public class RestcrudApplication {
 }
 
 // NOTE:
+// By default Spring Data Rest will create endpoints based on entity type
+// simple pluralized form
+// First character of entity type is lowercase
+// then just add 's' to the entity
+// Spring Data REST does not handle complex pluralized forms
+// in this case, you need to specify plural name
+// solution: @RepositoryRestResource(path="endpoint_name")
+
 // Spring Data Rest endpoints are HATEOAS compliant
 // HATEOAS: Hypermedia as the Engine of Application State
 
